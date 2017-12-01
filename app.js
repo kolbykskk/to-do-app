@@ -1,6 +1,11 @@
 function onReady() {
-  let id = 0;
   let toDos = [];
+  let id = 0
+  if(localStorage.getItem('toDos')) {
+    toDos = JSON.parse(localStorage.getItem('toDos'));
+    id = toDos.length;
+    renderTheUI();
+  }
   const addToDoForm = document.getElementById('addToDoForm');
   const newToDoText = document.getElementById('newToDoText');
 
@@ -19,7 +24,9 @@ function onReady() {
 
     newToDoText.value = '';
 
+    localStorage.setItem('toDos', JSON.stringify(toDos));
     renderTheUI();
+    console.log(toDos);
   }
 
   addToDoForm.addEventListener('submit', event => {
@@ -41,6 +48,10 @@ function onReady() {
       deleteButton.type = "submit";
       deleteButton.textContent = "Delete";
 
+      if(toDo.complete === true) {
+        checkbox.checked = true;
+      }
+
       newLi.textContent = toDo.title;
 
       toDoList.appendChild(newLi);
@@ -52,6 +63,16 @@ function onReady() {
         toDoList.removeChild(newLi);
       };
 
+      checkbox.onclick = function () {
+        if(checkbox.checked) {
+          toDo.complete = true;
+          localStorage.setItem('toDos', JSON.stringify(toDos));
+        } else {
+          toDo.complete = false;
+          localStorage.setItem('toDos', JSON.stringify(toDos));
+        }
+      };
+
     });
 
 
@@ -59,6 +80,7 @@ function onReady() {
 
   function deleteToDo(id) {
     toDos = toDos.filter(item => item.id !== id);
+    localStorage.setItem('toDos', JSON.stringify(toDos));
   };
 
 };
